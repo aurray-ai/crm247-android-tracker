@@ -31,7 +31,7 @@ and automatically sends required metadata for dedupe:
 
 ## Installation (Consumer App)
 
-### 1) Add GitHub Packages repository
+### 1) Use Maven Central in your app repositories
 
 In your root `settings.gradle.kts` (or `dependencyResolutionManagement` block):
 
@@ -40,15 +40,6 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {
-            url = uri("https://maven.pkg.github.com/aurray-ai/crm247-android-tracker")
-            credentials {
-                username = providers.gradleProperty("gpr.user").orNull
-                    ?: System.getenv("GITHUB_USERNAME")
-                password = providers.gradleProperty("gpr.key").orNull
-                    ?: System.getenv("GITHUB_TOKEN")
-            }
-        }
     }
 }
 ```
@@ -59,18 +50,11 @@ In app module `build.gradle.kts`:
 
 ```kotlin
 dependencies {
-    implementation("ai.crm247:tracker-android:0.1.0")
+    implementation("uk.co.aurray:tracker-android:0.1.0")
 }
 ```
 
-### 3) Provide credentials locally
-
-In your `~/.gradle/gradle.properties` (recommended):
-
-```properties
-gpr.user=YOUR_GITHUB_USERNAME
-gpr.key=YOUR_GITHUB_TOKEN
-```
+No GitHub package credentials are required for consumers once the artifact is available on Maven Central.
 
 ## Quick start (Kotlin)
 
