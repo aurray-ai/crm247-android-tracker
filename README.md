@@ -29,6 +29,49 @@ and automatically sends required metadata for dedupe:
 - `tracker/` Android library module
 - Package: `ai.crm247.tracker`
 
+## Installation (Consumer App)
+
+### 1) Add GitHub Packages repository
+
+In your root `settings.gradle.kts` (or `dependencyResolutionManagement` block):
+
+```kotlin
+dependencyResolutionManagement {
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://maven.pkg.github.com/aurray-ai/crm247-android-tracker")
+            credentials {
+                username = providers.gradleProperty("gpr.user").orNull
+                    ?: System.getenv("GITHUB_USERNAME")
+                password = providers.gradleProperty("gpr.key").orNull
+                    ?: System.getenv("GITHUB_TOKEN")
+            }
+        }
+    }
+}
+```
+
+### 2) Add dependency
+
+In app module `build.gradle.kts`:
+
+```kotlin
+dependencies {
+    implementation("ai.crm247:tracker-android:0.1.0")
+}
+```
+
+### 3) Provide credentials locally
+
+In your `~/.gradle/gradle.properties` (recommended):
+
+```properties
+gpr.user=YOUR_GITHUB_USERNAME
+gpr.key=YOUR_GITHUB_TOKEN
+```
+
 ## Quick start (Kotlin)
 
 ```kotlin
@@ -100,38 +143,3 @@ Crm247Tracker.INSTANCE.identify("user@company.com", java.util.Collections.emptyM
 - Rich helper APIs (`trackClick`, `trackFormSubmit`, `trackScroll`)
 - Optional WorkManager-based reliable background flush
 - Instrumentation tests
-
-## Publishing
-
-### Publish to local Maven
-
-```bash
-cd mobile-sdks/android/crm247-tracker
-gradle :tracker:publishReleasePublicationToMavenLocal
-```
-
-### Publish to remote Maven repository
-
-Set repository credentials and URLs via env vars (or Gradle properties):
-
-```bash
-export CRM247_MAVEN_RELEASES_URL="https://your.repo/releases"
-export CRM247_MAVEN_SNAPSHOTS_URL="https://your.repo/snapshots"
-export CRM247_MAVEN_USERNAME="username"
-export CRM247_MAVEN_PASSWORD="password"
-```
-
-Optional signing (in-memory PGP):
-
-```bash
-export ORG_GRADLE_PROJECT_signingInMemoryKeyId="YOUR_KEY_ID"
-export ORG_GRADLE_PROJECT_signingInMemoryKey="BASE64_OR_ASCII_ARMORED_KEY"
-export ORG_GRADLE_PROJECT_signingInMemoryKeyPassword="YOUR_KEY_PASSWORD"
-```
-
-Run publish:
-
-```bash
-cd mobile-sdks/android/crm247-tracker
-gradle :tracker:publishReleasePublicationToCrm247RemoteRepository
-```
